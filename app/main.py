@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from apscheduler.schedulers.background import BackgroundScheduler
+from dotenv import load_dotenv
 
 from app.api.webhook import router as webhook_router
 from app.services.reminders import send_due_reminders
+
+load_dotenv()
 
 app = FastAPI(title="Pet-Planner")
 app.include_router(webhook_router, prefix="/webhook")

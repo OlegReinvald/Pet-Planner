@@ -1,7 +1,10 @@
 import os
 import requests
+from dotenv import load_dotenv
 
 from app.storage.local import append_note
+
+load_dotenv()
 
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
