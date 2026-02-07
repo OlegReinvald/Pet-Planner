@@ -31,6 +31,9 @@ tests/
 uvicorn app.main:app --reload
 ```
 
+## Локальный режим (без токенов)
+Если NOTION_TOKEN и NOTION_DATABASE_ID не заданы, заметки сохраняются в `./data/notes.jsonl`.
+
 ## Переменные окружения
 - TELEGRAM_BOT_TOKEN
 - NOTION_TOKEN

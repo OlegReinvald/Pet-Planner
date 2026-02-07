@@ -1,13 +1,25 @@
 import os
 import requests
 
+from app.storage.local import append_note
+
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 
 def create_note(title: str, note_type: str, due_iso: str | None, chat_id: str):
     if not NOTION_TOKEN or not NOTION_DATABASE_ID:
-        raise RuntimeError("NOTION_TOKEN/NOTION_DATABASE_ID not set")
+        # local fallback
+        return append_note(
+            {
+                "title": title,
+                "type": note_type,
+                "due": due_iso,
+                "chat_id": str(chat_id),
+                "source": "local",
+                "status": "open",
+            }
+        )
 
     url = "https://api.notion.com/v1/pages"
     headers = {
