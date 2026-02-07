@@ -55,7 +55,7 @@ def parse_note(text: str) -> ParsedNote:
         settings={
             "PREFER_DATES_FROM": "future",
             "RETURN_AS_TIMEZONE_AWARE": True,
-            "TIMEZONE": "Europe/Warsaw",
+            "TIMEZONE": "Europe/Minsk",
         },
     )
     due = dt.isoformat() if dt else None
