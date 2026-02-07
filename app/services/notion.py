@@ -1,4 +1,6 @@
 import os
+from datetime import datetime, timezone
+
 import requests
 from dotenv import load_dotenv
 
@@ -32,14 +34,17 @@ def create_note(title: str, note_type: str, due_iso: str | None, chat_id: str):
     }
 
     properties = {
-        "Title": {"title": [{"text": {"content": title}}]},
+        "Название задачи": {"title": [{"text": {"content": title}}]},
         "Type": {"select": {"name": note_type}},
         "Source": {"rich_text": [{"text": {"content": "Telegram"}}]},
         "ChatId": {"rich_text": [{"text": {"content": str(chat_id)}}]},
-        "Status": {"select": {"name": "open"}},
+        "Статус": {"select": {"name": "Не начато"}},
     }
     if due_iso:
-        properties["Due"] = {"date": {"start": due_iso}}
+        properties["Дата окончания"] = {"date": {"start": due_iso}}
+
+    # store creation date
+    properties["Дата выдачи"] = {"date": {"start": datetime.now(tz=timezone.utc).isoformat()}}
 
     payload = {
         "parent": {"database_id": NOTION_DATABASE_ID},
