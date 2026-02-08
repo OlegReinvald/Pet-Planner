@@ -17,3 +17,8 @@ def test_default_due_task():
     note = parse_note("/task Сделать отчёт")
     assert note.note_type == "task"
     assert note.due is not None
+
+
+def test_parse_mixed_text_date():
+    note = parse_note("test завтра")
+    assert note.due is not None

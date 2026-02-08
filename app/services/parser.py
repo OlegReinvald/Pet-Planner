@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import dateparser
+from dateparser.search import search_dates
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -62,15 +63,17 @@ def _default_due(note_type: str) -> Optional[datetime]:
 def parse_note(text: str) -> ParsedNote:
     note_type = classify(text)
     cleaned = strip_command(text)
-    dt = dateparser.parse(
-        cleaned,
-        languages=["ru", "en"],
-        settings={
-            "PREFER_DATES_FROM": "future",
-            "RETURN_AS_TIMEZONE_AWARE": True,
-            "TIMEZONE": "Europe/Minsk",
-        },
-    )
+    settings = {
+        "PREFER_DATES_FROM": "future",
+        "RETURN_AS_TIMEZONE_AWARE": True,
+        "TIMEZONE": "Europe/Minsk",
+    }
+
+    dt = dateparser.parse(cleaned, languages=["ru", "en"], settings=settings)
+    if not dt:
+        found = search_dates(cleaned, languages=["ru", "en"], settings=settings)
+        if found:
+            dt = found[0][1]
     if not dt:
         dt = _default_due(note_type)
     due = dt.isoformat() if dt else None
