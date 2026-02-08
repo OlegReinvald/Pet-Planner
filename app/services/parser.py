@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from typing import Optional
 
 import dateparser
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 
 @dataclass
@@ -46,6 +48,17 @@ def strip_command(text: str) -> str:
     return text
 
 
+def _default_due(note_type: str) -> Optional[datetime]:
+    tz = ZoneInfo("Europe/Minsk")
+    now = datetime.now(tz=tz)
+
+    if note_type == "task":
+        return (now + timedelta(days=1)).replace(hour=10, minute=0, second=0, microsecond=0)
+    if note_type == "buy":
+        return now.replace(hour=19, minute=0, second=0, microsecond=0)
+    return None
+
+
 def parse_note(text: str) -> ParsedNote:
     note_type = classify(text)
     cleaned = strip_command(text)
@@ -58,5 +71,7 @@ def parse_note(text: str) -> ParsedNote:
             "TIMEZONE": "Europe/Minsk",
         },
     )
+    if not dt:
+        dt = _default_due(note_type)
     due = dt.isoformat() if dt else None
     return ParsedNote(title=cleaned.strip(), note_type=note_type, due=due)

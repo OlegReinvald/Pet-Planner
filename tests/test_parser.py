@@ -11,3 +11,9 @@ def test_commands():
     note = parse_note("/task Сделать отчёт завтра")
     assert note.note_type == "task"
     assert note.title.lower().startswith("сделать")
+
+
+def test_default_due_task():
+    note = parse_note("/task Сделать отчёт")
+    assert note.note_type == "task"
+    assert note.due is not None
